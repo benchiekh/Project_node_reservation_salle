@@ -6,17 +6,22 @@
     <title>Register</title>
     <!-- Inclure la bibliothèque Toastify dans la balise head -->
     <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css" rel="stylesheet">
+    <!-- Inclure la bibliothèque Toastify JavaScript avant votre script -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
+  
+
     <div class="row mt-5">
         <div class="col-md-6 m-auto">
           <div class="card card-body">
             <h1 class="text-center mb-3">
               <i class="fas fa-user-plus"></i> Register
             </h1>
-           
-                    <form action="/users/register" method="POST">
-                      
+         
+        
+          <form action="/users/register" method="POST">
+
               <div class="form-group">
                 <label for="name">Name</label>
                 <input
@@ -71,8 +76,11 @@
           </div>
         </div>
       </div> 
-    <!-- Placer ici les autres balises script, y compris la balise script pour charger les scripts personnalisés -->
-    <!-- Balise script pour charger les scripts personnalisés -->
     
-</body>
+      <script>
+      <%- include ("./partials/messages.ejs"); %>
+
+      </script>
+   
+      </body>
 </html>

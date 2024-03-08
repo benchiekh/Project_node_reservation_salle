@@ -1,0 +1,17 @@
+<% if (errors && errors.length > 0) { %>
+ 
+    // Parcourir les erreurs et afficher un toast pour chaque erreur
+    <% errors.forEach(function(error) { %>
+        Toastify({
+            text: '<%= error.msg %>',
+            duration: 3000, // Durée d'affichage du toast en millisecondes (3 secondes)
+            gravity: 'top', // Position du toast (changer en 'top' pour afficher en haut)
+            position: 'center', // Position horizontale du toast
+            backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)", // Couleur de fond du toast
+            close: true // Bouton de fermeture du toast
+        }).showToast();
+    <% });  %>
+<% } %>
+
+
+

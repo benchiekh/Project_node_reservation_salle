@@ -2,17 +2,22 @@ const express = require('express') ;
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
+const passport = require('passport');
 
 // Login Page
 router.get('/login',  (req, res) => res.render('login'));
 
 // Register Page
-router.get('/register',(req, res) => res.render('register'));
+router.get('/register', (req, res) => {
+    res.render('register', { errors: [] }); // Passer les données à votre modèle à l'intérieur de la fonction de rappel
+});
+
 
 // register hundle
 router.post('/register', (req, res) => {
   const { name, email, password, password2 } = req.body;
   let errors = [];
+
 
   // Vérifier les champs requis
   if (!name || !email || !password || !password2) {
@@ -32,7 +37,7 @@ router.post('/register', (req, res) => {
   if (errors.length > 0) {
       // S'il y a des erreurs, rendre à nouveau le formulaire d'inscription avec les erreurs
       res.render('register', {
-          errors,
+        errors ,
           name,
           email,
           password,
@@ -44,7 +49,7 @@ router.post('/register', (req, res) => {
           if (user) {
               errors.push({ msg: 'L\'email existe déjà' });
               res.render('register', {
-                  errors,
+                errors ,
                   name,
                   email,
                   password,
@@ -66,17 +71,32 @@ router.post('/register', (req, res) => {
                       newUser.password = hash;
                       // Enregistrer l'utilisateur dans la base de données
                       newUser.save()
-                          .then(user => {
-                              res.redirect('/users/login');
-                          })
-                          .catch(err => console.log(err));
-                  });
+                      .then(user => {
+                          req.flash('success_msg', 'You are now registered and can log in');
+                          res.redirect('/users/login');
+                      })
+                      .catch(err => console.log(err));
+              });
+                  
               });
           }
       });
   }
 });
-
+// login handle 
+router.post('/login', (req,res,next)=>{
+    passport.authenticate('local',{
+        successRedirect: '/dashboard',
+        failureRedirect: '/users/login',
+        faireFlash: true
+    })(req,res,next);
+})
+// log out 
+router.get('/logout', (req, res) => {
+    req.logout(() => {}); // Ajout d'une fonction de rappel vide
+    req.flash('success_msg', 'You are logged out');
+    res.redirect('/users/login');
+});
 
 module.exports = router ;
 
@@ -107,7 +127,7 @@ router.post('/register', async (req, res) => {
       res.status(201).json({ message: 'Utilisateur enregistré avec succès' });
   } catch (err) {
       // En cas d'erreur, renvoyer une réponse d'erreur
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ errors: err.message });
   }
 });
 */

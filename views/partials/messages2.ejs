@@ -1,0 +1,128 @@
+
+
+
+
+<% if (success_msg !== '') { %>
+    
+        Toastify({
+            text: '<%= success_msg %>',
+            duration: 3000,
+            gravity: 'top',
+            position: 'center',
+            backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)",
+            close: true
+        }).showToast();
+   
+<% } %>
+
+
+<% if (error_msg !== '') { %>
+    
+    Toastify({
+        text: '<%= error_msg %>',
+        duration: 3000,
+        gravity: 'top',
+        position: 'center',
+        backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)",
+        close: true
+    }).showToast();
+
+<% } %>
+const express = require('express');
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const router = express.Router();
+
+// Page de connexion
+router.get('/login', (req, res) => res.render('login'));
+
+// Page d'inscription
+router.get('/register', (req, res) => res.render('register', { errors: [] }));
+
+// Gestion de l'inscription
+router.post('/register', async (req, res) => {
+    const { name, email, password, password2 } = req.body;
+    let errors = [];
+
+    // Validation des champs requis
+    if (!name || !email || !password || !password2) {
+        errors.push({ msg: 'Veuillez remplir tous les champs' });
+    }
+
+    // Vérification de la correspondance des mots de passe
+    if (password !== password2) {
+        errors.push({ msg: 'Les mots de passe ne correspondent pas' });
+    }
+
+    // Vérification de la longueur du mot de passe
+    if (password.length < 6) {
+        errors.push({ msg: 'Le mot de passe doit comporter au moins 6 caractères' });
+    }
+
+    if (errors.length > 0) {
+        // S'il y a des erreurs, rendre à nouveau le formulaire d'inscription avec les erreurs
+        res.render('register', { errors, name, email, password, password2 });
+    } else {
+        // Vérifier si l'utilisateur existe déjà
+        try {
+            let user = await User.findOne({ email });
+            if (user) {
+                errors.push({ msg: 'L\'email existe déjà' });
+                res.render('register', { errors, name, email, password, password2 });
+            } else {
+                // Créer un nouvel utilisateur
+                user = new User({ name, email, password });
+
+                // Hachage du mot de passe
+                const salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(password, salt);
+
+                // Enregistrement de l'utilisateur dans la base de données
+                await user.save();
+                req.flash('success_msg', 'Vous êtes maintenant inscrit et pouvez vous connecter');
+                res.redirect('/users/login');
+            }
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Erreur du serveur');
+        }
+    }
+});
+
+// Gestion de la connexion
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    // Recherche de l'utilisateur dans la base de données
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+        }
+
+        // Vérification du mot de passe
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+        }
+
+        // Créer et signer le JWT
+        const token = jwt.sign({ id: user._id }, 'votre_clé_secrète', { expiresIn: '1d' });
+
+        // Renvoyer le JWT dans la réponse
+        res.redirect('/dashboard');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erreur du serveur');
+    }
+});
+
+// Déconnexion
+router.get('/logout', (req, res) => {
+    req.logout(() => {}); // Ajout d'une fonction de rappel vide
+    req.flash('success_msg', 'Vous êtes déconnecté');
+    res.redirect('/users/login');
+});
+
+module.exports = router;
