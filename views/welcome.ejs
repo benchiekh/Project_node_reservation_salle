@@ -1,12 +1,143 @@
-<div class="row mt-5">
-    <div class="col-md-6 m-auto">
-      <div class="card card-body text-center">
-        <h1><i class="fab fa-node-js fa-3x"></i></h1>
-        <p>Create an account or login</p>
-        <a href="/users/register" class="btn btn-primary btn-block mb-2"
-          >Register</a
-        >
-        <a href="/users/login" class="btn btn-secondary btn-block">Login</a>
-      </div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation de Salles de Réunion</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #007bff;
+        }
+        .navbar-brand {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .navbar-nav .nav-link {
+            color: #040404;
+        }
+        .header {
+            background-image: url('https://source.unsplash.com/1600x900/?meeting-room');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-align: center;
+            padding: 100px 0;
+        }
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .header p {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            border: none;
+            outline: none;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .features {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .feature-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .feature-description {
+            font-size: 18px;
+            color: #666;
+        }
+        .footer {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body> 
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">Meeting Room Reservation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/register"><i class="fas fa-user-plus"></i> Inscription</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/login"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
+</nav>
+
+
+    <div class="header">
+        <div class="container">
+            <h1>Réservez votre Salle de Réunion</h1>
+            <p>Planifiez vos réunions en toute simplicité avec notre plateforme de réservation de salles de réunion.</p>
+            <a href="#features" class="btn">En savoir plus</a>
+        </div>
+    </div>
+
+    <div class="features" id="features">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <i class="fas fa-calendar-check feature-icon"></i>
+                    <h2 class="feature-title">Réservation Facile</h2>
+                    <p class="feature-description">Réservez rapidement des salles de réunion en quelques clics seulement.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-clock feature-icon"></i>
+                    <h2 class="feature-title">Planification Flexible</h2>
+                    <p class="feature-description">Choisissez parmi une variété de créneaux horaires disponibles qui s'adaptent à votre emploi du temps.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-users feature-icon"></i>
+                    <h2 class="feature-title">Espaces Collaboratifs</h2>
+                    <p class="feature-description">Des salles de réunion conçues pour améliorer la collaboration et la productivité.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>&copy; 2024 Plateforme de Réservation de Salles de Réunion. Tous droits réservés.</p>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

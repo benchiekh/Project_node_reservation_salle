@@ -4,8 +4,12 @@ const bcrypt = require('bcryptjs');
 const router = express.Router();
 const passport = require('passport');
 
+
 // Login Page
-router.get('/login',  (req, res) => res.render('login'));
+router.get('/login', (req, res) => {
+    res.render('login', { message: req.flash('error') }); // Passer les messages flash à la vue
+});
+
 
 // Register Page
 router.get('/register', (req, res) => {
@@ -84,18 +88,27 @@ router.post('/register', (req, res) => {
   }
 });
 // login handle 
-router.post('/login', (req,res,next)=>{
-    passport.authenticate('local',{
-        successRedirect: '/dashboard',
-        failureRedirect: '/users/login',
-        faireFlash: true
-    })(req,res,next);
-})
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) { return next(err); }
+        if (!user) {
+            req.flash('error', 'Invalid email or password.'); // Définir le message d'erreur flash
+            return res.redirect('/users/login');
+        }
+        req.login(user, (err) => {
+            if (err) { return next(err); }
+            req.flash('error2', 'Welcomme.');
+            return res.redirect('/meetingRooms');
+        });
+    })(req, res, next);
+});
+
+
 // log out 
 router.get('/logout', (req, res) => {
     req.logout(() => {}); // Ajout d'une fonction de rappel vide
-    req.flash('success_msg', 'You are logged out');
-    res.redirect('/users/login');
+    req.flash('error1', 'vous avez quitter');
+    res.redirect('/');
 });
 
 module.exports = router ;

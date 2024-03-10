@@ -4,83 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <!-- Inclure la bibliothèque Toastify dans la balise head -->
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- Toastify CSS -->
     <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css" rel="stylesheet">
-    <!-- Inclure la bibliothèque Toastify JavaScript avant votre script -->
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .lead {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .lead a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .lead a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  
-
-    <div class="row mt-5">
-        <div class="col-md-6 m-auto">
-          <div class="card card-body">
-            <h1 class="text-center mb-3">
-              <i class="fas fa-user-plus"></i> Register
-            </h1>
-         
-        
-          <form action="/users/register" method="POST">
-
-              <div class="form-group">
+    <div class="container">
+        <h1 class="text-center mb-4"><i class="fas fa-user-plus"></i> Register</h1>
+        <form id="registerForm" action="/users/register" method="POST">
+            <div class="form-group">
                 <label for="name">Name</label>
-                <input
-                  type="name"
-                  id="name"
-                  name="name"
-                  class="form-control"
-                  placeholder="Enter Name"
-                  value="<%= typeof name != 'undefined' ? name : '' %>"
-                  
-                  
-                />
-              </div>
-              <div class="form-group">
+                <input type="text" id="name" name="name" class="form-control" placeholder="Enter Name">
+            </div>
+            <div class="form-group">
                 <label for="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  class="form-control"
-                  placeholder="Enter Email"
-                  value="<%= typeof email != 'undefined' ? email : '' %>"
-                />
-              </div>
-              <div class="form-group">
+                <input type="email" id="email" name="email" class="form-control" placeholder="Enter Email">
+            </div>
+            <div class="form-group">
                 <label for="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  class="form-control"
-                  placeholder="Create Password"
-                  value="<%= typeof password != 'undefined' ? password : '' %>"
-                />
-              </div>
-              <div class="form-group">
+                <input type="password" id="password" name="password" class="form-control" placeholder="Create Password">
+            </div>
+            <div class="form-group">
                 <label for="password2">Confirm Password</label>
-                <input
-                  type="password"
-                  id="password2"
-                  name="password2"
-                  class="form-control"
-                  placeholder="Confirm Password"
-                  value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
-                />
-              </div>
-              <button type="submit" class="btn btn-primary btn-block">
-                Register
-              </button>
-            </form>
-            <p class="lead mt-4">Have An Account? <a href="/users/login">Login</a></p>
-          </div>
-        </div>
-      </div> 
-    
-      <script>
-      <%- include ("./partials/messages.ejs"); %>
+                <input type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <p class="lead mt-3">Have An Account? <a href="/users/login">Login</a></p>
+    </div>
 
-      </script>
+    <!-- Font Awesome JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
    
-      </body>
+<script>
+       <% if (errors && errors.length > 0) { %>
+ 
+    // Parcourir les erreurs et afficher un toast pour chaque erreur
+    <% errors.forEach(function(error) { %>
+        Toastify({
+            text: '<%= error.msg %>',
+            duration: 3000, // Durée d'affichage du toast en millisecondes (3 secondes)
+            gravity: 'top', // Position du toast (changer en 'top' pour afficher en haut)
+            position: 'center', // Position horizontale du toast
+            backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)", // Couleur de fond du toast
+            close: true // Bouton de fermeture du toast
+        }).showToast();
+    <% });  %>
+<% } %>
+    </script>
+</body>
 </html>
