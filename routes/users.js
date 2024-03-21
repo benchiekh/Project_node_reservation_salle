@@ -3,7 +3,8 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const passport = require('passport');
-
+const { ensureAuthenticated } = require('../config/auth');
+const MeetingRoom = require('../models/meetingRoom.js');
 
 // Login Page
 router.get('/login', (req, res) => {
@@ -15,6 +16,7 @@ router.get('/login', (req, res) => {
 router.get('/register', (req, res) => {
     res.render('register', { errors: [] }); // Passer les données à votre modèle à l'intérieur de la fonction de rappel
 });
+
 
 
 // register hundle

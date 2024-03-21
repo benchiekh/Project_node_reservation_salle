@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liste des Salles de Réunion</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* Styles pour le tableau */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .available {
+      color: green;
+    }
+
+    .unavailable {
+      color: red;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+
+    .navbar {
+      background-color: #007bff;
+    }
+
+    .navbar-brand {
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .navbar-nav .nav-link {
+      color: #040404;
+    }
+
+    .header {
+      background-image: url('https://source.unsplash.com/1600x900/?meeting-room');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+      text-align: center;
+      padding: 100px 0;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .header p {
+      font-size: 20px;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      border: none;
+      outline: none;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .features {
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .feature-description {
+      font-size: 18px;
+      color: #666;
+    }
+
+    .footer {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <h2>Liste des Salles de Réunion</h2>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/"><i class="fas fa-home"></i> Accueil</a>
+
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/meetingRooms"><i class="fas fa-plus-circle"></i> Ajouter une salle</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <br>
+  <br></br>
+  <br></br>
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Capacité</th>
+        <th>Équipement</th>
+        <th>Disponibilité</th>
+        <th>Reservation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% meetingRooms.forEach(room=> { %>
+        <tr>
+          <td>
+            <%= room.name %>
+          </td>
+          <td>
+            <%= room.capacity %>
+          </td>
+          <td>
+            <%= room.equipment.join(', ') %></td>
+                    <td class="<%= room.availability ? ' available' : 'unavailable' %>">
+              <%= room.availability ? 'Disponible' : 'Non disponible' %>
+          </td>
+          <td id="reservationForm_<%= room.name %>">
+            <% if (room.availability) { %>
+              <button class="btn btn-success" onclick="reserverSalle('<%= room.name %>')">Réserver</button>
+              <% } else { %>
+                <button class="btn btn-primary" disabled>Non disponible</button>
+                <% } %>
+          </td>
+
+
+
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+  <script>
+    function reserverSalle(nomSalle) {
+      // Créer le contenu du formulaire de réservation
+      var formulaireReservation = `
+    <form id="confirmReservationForm${nomSalle}" action="/reservation/confirmReservation" method="POST">
+        <label for="dateDebut">Date de début :</label>
+        <input type="date" id="dateDebut_${nomSalle}" name="dateDebut" required>
+        <label for="heureDebut">Heure de début :</label>
+        <input type="time" id="heureDebut_${nomSalle}" name="heureDebut" required>
+        <label for="heureFin">Heure de fin :</label>
+        <input type="time" id="heureFin_${nomSalle}" name="heureFin" required>
+        <label for="dateFin">Date de fin  :</label>
+        <input type="date" id="dateFin_${nomSalle}" name="dateFin" required>
+        <input type="hidden" id="roomName_${nomSalle}" name="roomName" value="${nomSalle}">
+        <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+    </form>`;
+
+
+      // Remplacer le bouton par le formulaire de réservation
+      document.getElementById(`reservationForm_${nomSalle}`).innerHTML = formulaireReservation;
+    }
+
+    function reserverSalleForm(nomSalle) {
+      const dateDebut = document.getElementById(`dateDebut_${nomSalle}`).value;
+      const heureDebut = document.getElementById(`heureDebut_${nomSalle}`).value;
+      const heureFin = document.getElementById(`heureFin_${nomSalle}`).value;
+      const dateFin = document.getElementById(`dateFin_${nomSalle}`).value;
+    }
+  </script>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

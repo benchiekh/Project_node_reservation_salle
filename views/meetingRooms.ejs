@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> to Meeting Rooms</title>
+    <title>Meeting Rooms</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">welcome <%= name %> to Gestion des Salles de Réunion</h1>
+        <h1 class="mb-4">Welcome <%= name %> to Gestion des Salles de Réunion</h1>
        
         <!-- Formulaire d'ajout de salle de réunion -->
         <form action="/room/meetingRooms" method="POST">
@@ -29,20 +31,25 @@
                 <label for="availability">Disponibilité :</label>
                 <select id="availability" name="availability" class="form-control">
                     <option value="true">Disponible</option>
-                    <option value="false">Non disponible</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Ajouter Salle de Réunion</button>
+            <button type="submit" class="btn btn-danger">Ajouter Salle de Réunion</button>
+            <button type="button" class="btn btn-success" onclick="window.location.href = '/salle/salles';">Consulter tous les Salles</button>
+
         </form>
-        
 
-        <!-- Liste des salles de réunion -->
-        <h2 class="mt-5">Liste des Salles de Réunion</h2>
+      
 
-       <!-- Affichage du message flash de succès -->
-
-
-        
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
+<!-- Inclure les scripts JavaScript à l'intérieur de la balise <script> -->
+ 
+
 </body>
 </html>
