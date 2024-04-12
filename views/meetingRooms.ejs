@@ -11,10 +11,19 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">Welcome <%= name %> to Gestion des Salles de Réunion</h1>
-       
+        <h1 class="mb-4 text-center font-weight-bold text-primary">Welcome <span class="text-danger"><%= name %></span> to Gestion des Salles de Réunion</h1>
+
+        <% if (errors.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+                <% errors.forEach(error => { %>
+                    <p><%= error.msg %></p>
+                <% }) %>
+            </div>
+        <% } %>
+        
+        
         <!-- Formulaire d'ajout de salle de réunion -->
-        <form action="/room/meetingRooms" method="POST">
+        <form id="addRoomForm" action="/room/meetingRooms" method="POST">
             <div class="form-group">
                 <label for="roomName">Nom de la salle :</label>
                 <input type="text" id="roomName" name="roomName" class="form-control" placeholder="Entrez le nom de la salle">
@@ -35,21 +44,13 @@
             </div>
             <button type="submit" class="btn btn-danger">Ajouter Salle de Réunion</button>
             <button type="button" class="btn btn-success" onclick="window.location.href = '/salle/salles';">Consulter tous les Salles</button>
-
         </form>
-
-      
-
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Toastify JS -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
-
-<!-- Inclure les scripts JavaScript à l'intérieur de la balise <script> -->
- 
-
+    
 </body>
 </html>

@@ -28,11 +28,35 @@ router.post('/confirmReservation', async (req, res) => {
 
         await MeetingRoom.findOneAndUpdate({ name: roomName }, { availability: false });
 
-        res.status(200).send('Réservation confirmée');
-        window.location.reload();
+        
+        res.redirect('/salle/salles?reservation=confirmee');
+        
     } catch (error) {
         console.error('Une erreur s\'est produite lors de la confirmation de la réservation:', error);
         res.status(500).send('Une erreur s\'est produite lors de la confirmation de la réservation.');
+    }
+});
+router.delete('/cancelReservation/:id', async (req, res) => {
+    try {
+        const { roomName } = req.body;
+
+        const reservationId = req.params.id;
+        const reservation = await Reservation.findById(reservationId);
+
+        if (!reservation) {
+            return res.status(404).send('Réservation non trouvée');
+        }
+
+        // Mettre à jour la disponibilité de la salle de réunion dans MongoDB
+        const meetingRoom = await MeetingRoom.findOneAndUpdate({ name: roomName }, { availability: true });
+
+        // Supprimer la réservation de la base de données
+        await Reservation.findByIdAndDelete(reservationId);
+
+        res.status(200).send('Réservation annulée avec succès');
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de l\'annulation de la réservation:', error);
+        res.status(500).send('Une erreur s\'est produite lors de l\'annulation de la réservation.');
     }
 });
 

@@ -1,6 +1,7 @@
 const express = require('express') ;
 const MeetingRoom = require('../models/meetingRoom.js');
 const router = express.Router();
+const Reservation = require('../models/reservation.js');
 const { ensureAuthenticated } = require('../config/auth');
 
 router.get('/salles', ensureAuthenticated, async (req, res) => {
@@ -17,5 +18,30 @@ router.get('/salles', ensureAuthenticated, async (req, res) => {
         res.status(500).send('Erreur Serveur');
     }
 });
+router.post('/deleteMeetingRoom/:id', async (req, res) => {
+  try {
+    const roomId = req.params.id;
 
+    // Vérifier si la salle de réunion existe
+    const meetingRoom = await MeetingRoom.findById(roomId);
+    if (!meetingRoom) {
+      return res.status(404).send('Salle de réunion non trouvée');
+    }
+
+    // Supprimer la salle de réunion du modèle MeetingRoom
+    await MeetingRoom.findByIdAndDelete(roomId);
+
+    // Vérifier et supprimer les réservations associées à cette salle de réunion
+    await Reservation.deleteMany({ MeetingRoom: roomId });
+
+    // Rediriger vers la même page pour actualiser après la suppression
+    res.redirect('/salle/salles'); // Modifier '/salle' selon votre chemin de page
+
+  } catch (error) {
+    console.error('Une erreur s\'est produite lors de la suppression de la salle de réunion:', error);
+    res.status(500).send('Une erreur s\'est produite lors de la suppression de la salle de réunion.');
+  }
+});
+
+  
 module.exports = router ;

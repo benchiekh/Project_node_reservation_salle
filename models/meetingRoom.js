@@ -8,6 +8,8 @@ const meetingRoomSchema = new mongoose.Schema({
     capacity: { type: Number, required: true },
     equipment: { type: [String], default: [] },
     availability: { type: Boolean, default: true }
+
+    
 });
 
 // Création du modèle MeetingRoom à partir du schéma

@@ -4,30 +4,22 @@ const MeetingRoom = require('../models/meetingRoom');
 const { ensureAuthenticated } = require('../config/auth');
 
 
-router.get('/meetingRooms', ensureAuthenticated, async (req, res) => {
-    try {
-        // Récupérer toutes les salles de réunion depuis la base de données
-        const meetingRooms = await MeetingRoom.find();
-        res.render('meetingRooms', { 
-            name: req.user.name,
-            meetingRooms: meetingRooms,
-            errors: [] // Assurez-vous de passer errors même si c'est vide pour éviter l'erreur
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Erreur Serveur');
-    }
-});
-
-
-router.post('/meetingRooms',ensureAuthenticated, async (req, res) => {
+router.post('/meetingRooms', ensureAuthenticated, async (req, res) => {
     const { roomName, capacity, equipment, availability } = req.body;
     let errors = [];
 
+    // Vérifier si tous les champs sont remplis
     if (!roomName || !capacity || !equipment || !availability) {
         errors.push({ msg: 'Veuillez remplir tous les champs' });
     }
 
+    // Vérifier si une salle avec le même nom existe déjà
+    const existingRoom = await MeetingRoom.findOne({ name: roomName });
+    if (existingRoom) {
+        errors.push({ msg: 'Une salle avec ce nom existe déjà' });
+    }
+
+    // Si des erreurs sont présentes, les afficher et ne pas ajouter la salle
     if (errors.length > 0) {
         res.render('meetingRooms', {
             name: req.user.name,
@@ -38,6 +30,7 @@ router.post('/meetingRooms',ensureAuthenticated, async (req, res) => {
             availability
         });
     } else {
+        // Si aucune erreur, ajouter la nouvelle salle à la base de données
         try {
             const newMeetingRoom = new MeetingRoom({
                 name: roomName,
@@ -46,12 +39,8 @@ router.post('/meetingRooms',ensureAuthenticated, async (req, res) => {
                 availability: availability
             });
             await newMeetingRoom.save();
-            req.flash('successMessage', 'Salle ajoutée avec succès');
-            // Rendre la nouvelle page ejs ici
-            res.render('meetingRooms', {
-                name: req.user.name,
-                successMessage: req.flash('successMessage')
-            });
+            req.flash('successMessage', 'Salle ajoutée avec succès'); // Enregistrer le message de succès dans le flash
+            res.redirect('/meetingRooms'); // Rediriger vers la page meetingRooms pour afficher le message de succès
         } catch (err) {
             console.error(err);
             res.status(500).send('Erreur Serveur');

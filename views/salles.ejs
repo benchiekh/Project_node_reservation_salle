@@ -154,6 +154,10 @@
         <th>Équipement</th>
         <th>Disponibilité</th>
         <th>Reservation</th>
+        <th>Annuler Reservation</th>
+        <th>suppripmer</th>
+        
+        
       </tr>
     </thead>
     <tbody>
@@ -175,10 +179,23 @@
               <button class="btn btn-success" onclick="reserverSalle('<%= room.name %>')">Réserver</button>
               <% } else { %>
                 <button class="btn btn-primary" disabled>Non disponible</button>
+                
                 <% } %>
           </td>
+          <td >
+            <% if (!room.availability) { %>
+              <!-- Bouton pour annuler la réservation -->
+              <button class="btn btn-danger" onclick="cancelReservation('<%= room._id %>')">Annuler la réservation</button>
+              <% } %>
+          </td>
+        
 
-
+          <td>
+            <form action="/salle/deleteMeetingRoom/<%= room._id %>" method="POST">
+                <button type="submit" class="btn" style="background-color: red; color: white;">Supprimer</button>
+            </form>
+        </td>
+        
 
         </tr>
         <% }); %>
@@ -213,6 +230,37 @@
       const dateFin = document.getElementById(`dateFin_${nomSalle}`).value;
     }
   </script>
+  <script>
+    // Détecter le paramètre de query et afficher une alerte
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const reservationStatus = urlParams.get('reservation');
+
+        if (reservationStatus === 'confirmee') {
+            // Afficher une alerte pour confirmer la réservation
+            alert('Réservation confirmée');
+        }
+    });
+</script>
+<script>
+  function cancelReservation(reservationId) {
+    if (confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
+      fetch(`/cancelReservation/${reservationId}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (response.ok) {
+          location.reload(); // Recharger la page après l'annulation de la réservation
+        } else {
+          console.error('Erreur lors de l\'annulation de la réservation');
+        }
+      })
+      .catch(error => console.error('Erreur lors de l\'annulation de la réservation:', error));
+    }
+  }
+</script>
+
+
   <script src="https://kit.fontawesome.com/a076d05399.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>

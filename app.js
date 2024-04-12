@@ -6,8 +6,11 @@ const session = require('express-session');
 const passport = require('passport');
 const flash = require('express-flash');
 
+
  
 const app = express();
+
+
 const db = require('./config/keys').MongoURI;
 
 // passport config 
@@ -32,7 +35,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
+app.use(flash());
 //passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
