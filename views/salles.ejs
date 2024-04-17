@@ -155,7 +155,10 @@
         <th>Disponibilité</th>
         <th>Reservation</th>
         <th>Annuler Reservation</th>
-        <th>suppripmer</th>
+        <% if (user && user.role === 'admin') { %>
+          <th>Supprimer</th>
+        <% } %>
+      </tr>
         
         
       </tr>
@@ -190,18 +193,48 @@
           </td>
         
 
-          <td>
+          <!-- <td>
             <form action="/salle/deleteMeetingRoom/<%= room._id %>" method="POST">
                 <button type="submit" class="btn" style="background-color: red; color: white;">Supprimer</button>
             </form>
-        </td>
-        
+        </td> -->
+        <td>
+        <% if (user && user.role === 'admin') { %>
+          <!-- Afficher le bouton de suppression -->
+          <form action="/salle/deleteMeetingRoom/<%= room._id %>" method="post">
+            <button type="submit" style="background-color: #dc3545; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">Supprimer</button>
+          </form>
+        <% } %>
+      </td>
 
         </tr>
         <% }); %>
     </tbody>
   </table>
   <script>
+    function cancelReservation(roomId) {
+      if (confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
+        fetch(`/api/meetingroom/${roomId}/cancelreservation`, { 
+          method: 'PUT'
+        })
+        .then(response => {
+          if (response.ok) {
+            // Mettre à jour l'interface utilisateur après l'annulation de la réservation
+            document.getElementById(`reservationForm_${roomId}`).innerHTML = '<button class="btn btn-success" onclick="reserverSalle(\''+roomId+'\')">Réserver</button>';
+            // Afficher un message pour indiquer que la réservation a été annulée
+            alert('Réservation annulée avec succès');
+          } else {
+            console.error('Erreur lors de l\'annulation de la réservation');
+          }
+        })
+        .catch(error => console.error('Erreur lors de l\'annulation de la réservation:', error));
+      }
+    }
+</script>
+
+
+
+    <script>
     function reserverSalle(nomSalle) {
       // Créer le contenu du formulaire de réservation
       var formulaireReservation = `
@@ -241,23 +274,6 @@
             alert('Réservation confirmée');
         }
     });
-</script>
-<script>
-  function cancelReservation(reservationId) {
-    if (confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
-      fetch(`/cancelReservation/${reservationId}`, {
-        method: 'DELETE'
-      })
-      .then(response => {
-        if (response.ok) {
-          location.reload(); // Recharger la page après l'annulation de la réservation
-        } else {
-          console.error('Erreur lors de l\'annulation de la réservation');
-        }
-      })
-      .catch(error => console.error('Erreur lors de l\'annulation de la réservation:', error));
-    }
-  }
 </script>
 
 

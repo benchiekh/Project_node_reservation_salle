@@ -64,10 +64,12 @@ router.post('/register', (req, res) => {
           } else {
               // Créer un nouvel utilisateur
               const newUser = new User({
-                  name,
-                  email,
-                  password
-              });
+                name,
+                email,
+                password,
+                role: 'user' // Défaut: utilisateur normal
+            });
+            
 
               // Générer un sel et hacher le mot de passe
               bcrypt.genSalt(10, (err, salt) => {

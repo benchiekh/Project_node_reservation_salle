@@ -36,32 +36,32 @@ router.post('/confirmReservation', async (req, res) => {
         res.status(500).send('Une erreur s\'est produite lors de la confirmation de la réservation.');
     }
 });
-router.delete('/cancelReservation/:id', async (req, res) => {
+router.put('/api/meetingroom/:id/cancelreservation', async (req, res) => {
+    const roomId = req.params.id;
+    
     try {
-        const { roomName } = req.body;
+        const meetingRoom = await MeetingRoom.findById(roomId);
 
-        const reservationId = req.params.id;
-        const reservation = await Reservation.findById(reservationId);
-
-        if (!reservation) {
-            return res.status(404).send('Réservation non trouvée');
+        if (!meetingRoom) {
+            return res.status(404).json({ error: 'La salle de réunion n\'a pas été trouvée' });
         }
 
-        // Mettre à jour la disponibilité de la salle de réunion dans MongoDB
-        const meetingRoom = await MeetingRoom.findOneAndUpdate({ name: roomName }, { availability: true });
+        // Récupérer les informations de réservation avant l'annulation
+        const reservationInfo = {
+            reservation: meetingRoom.reservation,
+            availability: meetingRoom.availability
+        };
 
-        // Supprimer la réservation de la base de données
-        await Reservation.findByIdAndDelete(reservationId);
-
-        res.status(200).send('Réservation annulée avec succès');
+        // Renvoyer les informations de réservation et de disponibilité
+        return res.json({ 
+            message: 'La réservation a été annulée avec succès',
+            reservationInfo: reservationInfo
+        });
     } catch (error) {
-        console.error('Une erreur s\'est produite lors de l\'annulation de la réservation:', error);
-        res.status(500).send('Une erreur s\'est produite lors de l\'annulation de la réservation.');
+        console.error(error);
+        return res.status(500).json({ error: 'Erreur interne du serveur lors de l\'annulation de la réservation' });
     }
 });
-
-    
-
 
 
 module.exports = router;

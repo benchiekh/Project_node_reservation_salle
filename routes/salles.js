@@ -17,9 +17,15 @@ router.get('/salles', ensureAuthenticated, async (req, res) => {
         console.error(err);
         res.status(500).send('Erreur Serveur');
     }
-});
-router.post('/deleteMeetingRoom/:id', async (req, res) => {
+});router.post('/deleteMeetingRoom/:id', async (req, res) => {
   try {
+    const userRole = req.user.role; // Supposons que le rôle de l'utilisateur est stocké dans req.user.role
+
+    // Vérifier si l'utilisateur est un administrateur
+    if (userRole !== 'admin') {
+      return res.status(403).send('Accès non autorisé. Seuls les administrateurs peuvent supprimer des salles de réunion.');
+    }
+
     const roomId = req.params.id;
 
     // Vérifier si la salle de réunion existe
@@ -43,5 +49,4 @@ router.post('/deleteMeetingRoom/:id', async (req, res) => {
   }
 });
 
-  
 module.exports = router ;
