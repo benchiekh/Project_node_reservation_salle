@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const MeetingRoom = require('../models/meetingRoom');
-const { ensureAuthenticated } = require('../config/auth');
+const { ensureAuthenticated , ensureAdmin} = require('../config/auth');
 
+router.get('/meetingRooms', ensureAuthenticated, ensureAdmin, (req, res) => {
+    res.render('meetingRooms');
+});
 
-router.post('/meetingRooms', ensureAuthenticated, async (req, res) => {
+router.post('/meetingRooms', ensureAuthenticated,  ensureAdmin , async (req, res) => {
     const { roomName, capacity, equipment, availability } = req.body;
     let errors = [];
 
